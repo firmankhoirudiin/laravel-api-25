@@ -6,35 +6,86 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\CategoryProduct;
 
+
 class CategoryProductController extends Controller
 {
-    //
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        $categoryProducts = CategoryProduct::all();
-        return response()->json($categoryProducts);
+        $productCategories = CategoryProduct::all();
+        return response()->json($productCategories); 
     }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
-        $categoryProduct = CategoryProduct::create($request->all());
-        return response()->json($categoryProduct, 201);
+        $validatedData = $request->validate([
+            'name' => 'required|max:255',
+            'description' => 'nullable|string',
+        ]);
+        $productCategory = CategoryProduct::create($validatedData);
+        return response()->json($productCategory, 201);
     }
-    public function show(CategoryProduct $categoryProduct)
+
+    /**
+     * Display the specified resource.
+     */
+    public function show($id)
     {
-        return response()->json($categoryProduct);
+        $productCategory = CategoryProduct::find($id);
+        if (!$productCategory) {
+            return response()->json(['message' => 'Product category not found'], 404);
+        }
+        return response()->json($productCategory);
     }
-    public function update(Request $request, CategoryProduct $categoryProduct)
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
     {
-        
-        $categoryProduct->update($request->all());
-
-
-        return response()->json($categoryProduct);
-
+        //
     }
-    public function destroy(CategoryProduct $categoryProduct)
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
     {
-        $categoryProduct->delete();
-        return response()->json(null, 204);
+        $validatedData = $request->validate([
+            'name' => 'required|max:255',
+            'description' => 'nullable|string',
+        ]);
+        $productCategory = CategoryProduct::find($id);
+        if (!$productCategory) {
+            return response()->json(['message' => 'Product category not found'], 404);
+        }
+        $productCategory->update($validatedData);
+        return response()->json($productCategory);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        $productCategory = CategoryProduct::find($id);
+        if (!$productCategory) {
+            return response()->json(['message' => 'Product category not found'], 404);
+        }
+        $productCategory->delete();
+        return response()->json(['message' => 'wes kehapos bro']);      
     }
 }

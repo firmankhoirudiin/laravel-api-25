@@ -11,20 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('product_variants', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('code');
-            $table->text('description')->nullable();
+            $table->string('variant_name');
+            $table->string('variant_code');
             $table->integer('price');
-
-            // kolom foreign key
-           
-
-            $table->unsignedBigInteger('category_product_id');
-            $table->foreign('category_product_id')->references('id')->on('category_products')->onDelete('cascade');
-
-
+            $table->integer('stock');
+            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -34,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('product_variants');
     }
 };
